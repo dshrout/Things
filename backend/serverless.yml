@@ -104,7 +104,7 @@ functions:
         Action:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
-  UpdateTodo:
+  UpdateThing:
     handler: src/lambda/http/updateThing.handler
     events:
       - http:
