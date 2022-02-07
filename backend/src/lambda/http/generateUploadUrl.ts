@@ -3,14 +3,14 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors, httpErrorHandler } from 'middy/middlewares';
 import { setAttachmentUrl } from '../../repository/thingRepo';
-import { getUserId } from '../../utils/jwtHelper';
+import { getUserFromJwt } from '../../utils/jwtHelper';
 import { getAttachmentUrl } from '../../utils/s3Helper';
 import { IsNullOrWhiteSpace } from '../../utils/stringHelper';
 
 const bucketName = process.env.ATTACHMENT_S3_BUCKET;
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const userId = getUserId(event);
+  const userId = getUserFromJwt(event);
   const todoId = event.pathParameters.todoId;
   if (IsNullOrWhiteSpace(userId) || IsNullOrWhiteSpace(todoId)) {
     return {

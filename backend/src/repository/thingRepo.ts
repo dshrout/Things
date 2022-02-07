@@ -11,22 +11,16 @@ export async function createThing(thing: Thing): Promise<Thing>{
 }
 
 // Retrieve
-export async function getThings(userId: string): Promise<TodoItem[]>{
-    return thingContext.getTodos(userId)
+export async function getThings(userId: string): Promise<Thing[]>{
+    return thingContext.getThings(userId)
 }
-export async function getThingsById(userId: string, thingId: string): Promise<Thing[]>{
-    return thingContext.getTodoById(userId, thingId)
+export async function getThingById(userId: string, thingId: string): Promise<Thing>{
+    return thingContext.getThingById(userId, thingId)
 }
 
 // Update
 export async function updateThing(thing: Thing): Promise<Thing>{
-    return await thingContext.updateTodo(
-        userId, 
-        todoId, {
-        name: todoUpdate.name,
-        dueDate: todoUpdate.dueDate,
-        done: todoUpdate.done
-    })
+    return await thingContext.updateThing(thing)
 }
 
 // Delete

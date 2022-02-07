@@ -2,17 +2,17 @@ import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors } from 'middy/middlewares';
-import { getTodos as getTodos } from '../../repository/thingRepo';
-import { getUserId } from '../../utils/jwtHelper';
+import { getThingById } from '../../repository/thingRepo';
+import { getUserFromJwt } from '../../utils/jwtHelper';
 import { createLogger } from '../../utils/logger';
 import { IsNullOrWhiteSpace } from '../../utils/stringHelper';
 
-const logger = createLogger('getTodos');
+const logger = createLogger('Retrieve Thing By Id');
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  logger.info('Get Todos: ', event);
+  logger.info('Get Thing By Id: ', event);
 
-  const userId = getUserId(event);
+  const userId = getUserFromJwt(event);
   if (IsNullOrWhiteSpace(userId)) {
     return {
       statusCode: 400,
@@ -20,12 +20,13 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     }
   }
 
-  const items = await getTodos(userId);
+  const thingId = event.pathParameters.id
+  const things = await getThingById(userId, thingId);
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      items
+      items: things
     })
   }
 })

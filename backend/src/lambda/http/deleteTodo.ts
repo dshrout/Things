@@ -2,8 +2,8 @@ import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors, httpErrorHandler } from 'middy/middlewares';
-import { getTodoById, deleteTodo } from '../../repository/thingRepo';
-import { getUserId } from '../../utils/jwtHelper';
+import { getThingById, deleteTodo } from '../../repository/thingRepo';
+import { getUserFromJwt } from '../../utils/jwtHelper';
 import { createLogger } from '../../utils/logger';
 import { IsNullOrWhiteSpace } from '../../utils/stringHelper';
 
@@ -12,7 +12,7 @@ const logger = createLogger('deleteTodo');
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Delete Todo: ', event);
 
-  const userId = getUserId(event)
+  const userId = getUserFromJwt(event)
   const todoId = event.pathParameters.todoId
   if (IsNullOrWhiteSpace(userId) || IsNullOrWhiteSpace(todoId)) {
     return {
@@ -21,7 +21,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     }
   }
 
-  const item = await getTodoById(userId, todoId);
+  const item = await getThingById(userId, todoId);
   if (item.length === 0) {
     logger.info('HTTP 404 - todoId ' + todoId + ' not found for user ' + userId);
     return {

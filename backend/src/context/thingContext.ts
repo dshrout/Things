@@ -25,51 +25,51 @@ export class ThingContext {
     }
 
     // Retrieve
-    async getTodos(userId: string): Promise<TodoItem[]> {
+    async getThings(userId: string): Promise<Thing[]> {
         const result = await this.docClient.query({
-            TableName: this.todoTable,
+            TableName: this.thingTable,
             KeyConditionExpression: 'userId = :userId',
             ExpressionAttributeValues: {
                 ':userId': userId
             }
           }).promise();
           
-          const items = result.Items as TodoItem[];
-          return items;
+          return result.Items as Thing[];
     }
-    async getTodoById(userId: string, todoId: string): Promise<TodoItem[]> {
+    async getThingById(userId: string, thingId: string): Promise<Thing> {
         const result = await this.docClient.query({
-            TableName: this.todoTable,
+            TableName: this.thingTable,
             KeyConditionExpression: 'userId = :userId AND todoId = :todoId',
             ExpressionAttributeValues: {
                 ':userId': userId,
-                ':todoId': todoId
+                ':todoId': thingId
             }
           }).promise();
-          
-          return result.Items as TodoItem[];
+
+          return result.Items[0] as Thing;
     }
 
     // Update
-    async updateTodo(userId: string, todoId: string, todoUpdate: TodoUpdate): Promise<TodoItem> {
-        logger.info(`Updating Todo: ${todoUpdate}`);
+    async updateThing(thing: Thing): Promise<Thing> {
+        logger.info(`Updating Thing: ${thing.id}`);
         await this.docClient.update({
-            TableName: this.todoTable,
+            TableName: this.thingTable,
             Key: { 
-                userId: userId,
-                todoId: todoId 
+                UserId: thing.userId,
+                Id: thing.id 
             },
-            ExpressionAttributeNames: {"#n": "name"}, // avoid conflict with DynamoDB reserved word. (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html)
-            UpdateExpression: "set #n = :name, dueDate = :dueDate, done = :done",
+            ExpressionAttributeNames: {"#n": "Name"}, // avoid conflict with DynamoDB reserved word. (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html)
+            UpdateExpression: "set Category = :Category, #n = :Name, Rating = :Rating, Review = :Review",
             ExpressionAttributeValues: {
-                ":name": todoUpdate.name,
-                ":dueDate": todoUpdate.dueDate,
-                ":done": todoUpdate.done,
+                ":Category": thing.category,
+                ":Name": thing.name,
+                ":Rating": thing.rating,
+                ":Review": thing.review,
             },
             ReturnValues: "UPDATED_NEW"
         }).promise();
           
-        return todoUpdate as TodoItem;
+        return thing as Thing;
     }
 
     // Delete

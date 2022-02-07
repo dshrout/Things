@@ -7,7 +7,7 @@ import { JwtPayload } from '../models/JwtPayload'
  * @param event an event from API Gateway
  * @returns a user id from a JWT token
  */
-export function getUserId(event: APIGatewayProxyEvent): string {
+export function getUserFromJwt(event: APIGatewayProxyEvent): string {
   const authorization = event.headers.Authorization;
   const jwtToken = authorization.split(' ')[1];
   return parseUserId(jwtToken)

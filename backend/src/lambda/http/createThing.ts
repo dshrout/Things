@@ -3,7 +3,7 @@ import 'source-map-support/register';
 import * as middy from 'middy';
 import { cors } from 'middy/middlewares';
 import { Thing } from '../../models/Thing';
-import { getUserId } from '../../utils/jwtHelper';
+import { getUserFromJwt } from '../../utils/jwtHelper';
 import { createThing } from '../../repository/thingRepo';
 import { createLogger } from '../../utils/logger';
 import { IsNullOrWhiteSpace } from '../../utils/stringHelper';
@@ -14,7 +14,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   logger.info('Create Thing: ', event);
 
   const newThing: Thing = JSON.parse(event.body);
-  newThing.userId = getUserId(event);
+  newThing.userId = getUserFromJwt(event);
 
   if (!ValidateRequest(newThing)) {
     return {
