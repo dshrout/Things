@@ -37,7 +37,7 @@ functions:
   RS256Auth:
     handler: src/lambda/authorizer/auth0Authorizer.handler
   CreateThing:
-    handler: src/lambda/http/createThing.handler
+    handler: src/lambda/api/things/createThing.handler
     events:
       - http:
           method: post
@@ -59,7 +59,7 @@ functions:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
   RetrieveThingById:
-    handler: src/lambda/http/retrieveThingById.handler
+    handler: src/lambda/api/things/retrieveThingById.handler
     events:
       - http:
           method: get
@@ -82,7 +82,7 @@ functions:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
   RetrieveThings:
-    handler: src/lambda/http/retrieveThings.handler
+    handler: src/lambda/api/things/retrieveThings.handler
     events:
       - http:
           method: get
@@ -105,7 +105,7 @@ functions:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
   UpdateThing:
-    handler: src/lambda/http/updateThing.handler
+    handler: src/lambda/api/things/updateThing.handler
     events:
       - http:
           method: patch
@@ -128,7 +128,7 @@ functions:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
   DeleteThing:
-    handler: src/lambda/http/deleteThing.handler
+    handler: src/lambda/api/things/deleteThing.handler
     events:
       - http:
           method: delete
@@ -141,26 +141,6 @@ functions:
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.THINGS_TABLE}
         Action:
           - dynamodb:DeleteItem
-          - dynamodb:Query
-      - Effect: Allow
-        Resource: "*"              
-        Action:
-          - xray:PutTraceSegments
-          - xray:PutTelemetryRecords
-  GenerateUploadUrl:
-    handler: src/lambda/http/generateUploadUrl.handler
-    events:
-      - http:
-          method: post
-          path: todos/{todoId}/attachment
-          cors: true
-          authorizer:
-            name: RS256Auth
-    iamRoleStatements:
-      - Effect: Allow
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.THINGS_TABLE}
-        Action:
-          - dynamodb:UpdateItem
           - dynamodb:Query
       - Effect: Allow
         Resource: "*"              
