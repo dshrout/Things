@@ -127,12 +127,12 @@ functions:
         Action:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
-  DeleteTodo:
-    handler: src/lambda/http/deleteTodo.handler
+  DeleteThing:
+    handler: src/lambda/http/deleteThing.handler
     events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: things/{id}
           cors: true
           authorizer:
             name: RS256Auth

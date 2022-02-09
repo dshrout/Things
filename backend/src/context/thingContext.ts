@@ -73,34 +73,34 @@ export class ThingContext {
     }
 
     // Delete
-    async deleteTodo(userId: string, todoId: string): Promise<void> {
-        logger.info(`Deleting Todo ${todoId}`);
+    async deleteThing(userId: string, thingId: string): Promise<void> {
+        logger.info(`Deleting Thing ${thingId}`);
         const params = {
-            TableName: this.todoTable,
+            TableName: this.thingTable,
             Key: {
-              userId,
-              todoId 
+              UserId: userId,
+              Id: thingId 
             }
         }
 
         await this.docClient.delete(params).promise()
     }
 
-    // setAttachmentUrl
-    async setAttachmentUrl(updatedTodo: any): Promise<TodoItem> {
-        logger.info(`updatedTodo.attachmentUrl: ${updatedTodo.attachmentUrl}`);
-        await this.docClient.update({
-            TableName: this.todoTable,
-            Key: { 
-                todoId: updatedTodo.todoId, 
-                userId: updatedTodo.userId },
-            UpdateExpression: "set attachmentUrl = :attachmentUrl",
-            ExpressionAttributeValues: {
-                ":attachmentUrl": updatedTodo.attachmentUrl,
-            },
-            ReturnValues: "UPDATED_NEW"
-        }).promise();
-          
-        return updatedTodo;
-    }
+    // // setAttachmentUrl
+    // async setAttachmentUrl(updatedTodo: any): Promise<TodoItem> {
+    //     logger.info(`updatedTodo.attachmentUrl: ${updatedTodo.attachmentUrl}`);
+    //     await this.docClient.update({
+    //         TableName: this.todoTable,
+    //         Key: { 
+    //             todoId: updatedTodo.todoId, 
+    //             userId: updatedTodo.userId },
+    //         UpdateExpression: "set attachmentUrl = :attachmentUrl",
+    //         ExpressionAttributeValues: {
+    //             ":attachmentUrl": updatedTodo.attachmentUrl,
+    //         },
+    //         ReturnValues: "UPDATED_NEW"
+    //     }).promise();
+    //      
+    //     return updatedTodo;
+    // }
 }

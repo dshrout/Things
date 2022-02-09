@@ -6,10 +6,10 @@ const s3 = new awsx.S3({signatureVersion: 'v4'});
 const bucketName = process.env.ATTACHMENT_S3_BUCKET;
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION;
 
-export function getAttachmentUrl (todoId: string): string {
+export function getUploadUrl (thingId: string): string {
     return s3.getSignedUrl('putObject', {
       Bucket: bucketName,
-      Key: todoId,
+      Key: thingId,
       Expires: parseInt(urlExpiration)
     });
   }

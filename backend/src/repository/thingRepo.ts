@@ -24,17 +24,17 @@ export async function updateThing(thing: Thing): Promise<Thing>{
 }
 
 // Delete
-export async function deleteTodo(userId: string, todoId: string){
-    return await thingContext.deleteTodo(userId, todoId)
+export async function deleteThing(userId: string, todoId: string){
+    return await thingContext.deleteThing(userId, todoId)
 }
 
-// setAttachmentUrl
-export async function setAttachmentUrl(userId: string, todoId: string, attachmentUrl: string): Promise<TodoItem>{
-    const updatedTodo: any = {
-        userId,
-        todoId,
-        attachmentUrl
-    }
-
-    return await thingContext.setAttachmentUrl(updatedTodo);
-}
+// // setAttachmentUrl
+// export async function setAttachmentUrl(userId: string, todoId: string, attachmentUrl: string): Promise<TodoItem>{
+//     const updatedTodo: any = {
+//         userId,
+//         todoId,
+//         attachmentUrl
+//     }
+//
+//     return await thingContext.setAttachmentUrl(updatedTodo);
+// }
