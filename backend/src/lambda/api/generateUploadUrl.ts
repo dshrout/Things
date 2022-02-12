@@ -11,18 +11,18 @@ import { IsNullOrWhiteSpace } from '../../utils/stringHelper';
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userId = getUserFromJwt(event);
-  const todoId = event.pathParameters.todoId;
-  if (IsNullOrWhiteSpace(userId) || IsNullOrWhiteSpace(todoId)) {
+  const thingId = event.pathParameters.thingId;
+  if (IsNullOrWhiteSpace(userId) || IsNullOrWhiteSpace(thingId)) {
     return {
       statusCode: 400,
       body: 'One or more items are empty.'
     }
   }
   
-  const uploadUrl = getUploadUrl(todoId);
-  //const attachmentUrl: string = `https://${bucketName}.s3.amazonaws.com/${todoId}`
+  const uploadUrl = getUploadUrl(thingId);
+  //const attachmentUrl: string = `https://${bucketName}.s3.amazonaws.com/${thingId}`
 
-  //await setAttachmentUrl(userId, todoId, attachmentUrl);
+  //await setAttachmentUrl(userId, thingId, attachmentUrl);
 
   return {
     statusCode: 200,

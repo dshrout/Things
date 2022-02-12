@@ -24,8 +24,8 @@ export async function updateThing(thing: Thing): Promise<Thing>{
 }
 
 // Delete
-export async function deleteThing(userId: string, todoId: string){
-    return await thingContext.deleteThing(userId, todoId)
+export async function deleteThing(userId: string, thingId: string){
+    return await thingContext.deleteThing(userId, thingId)
 }
 
 // // setAttachmentUrl

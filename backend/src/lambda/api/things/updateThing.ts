@@ -2,11 +2,11 @@ import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors, httpErrorHandler } from 'middy/middlewares';
-import { getThingById, updateThing } from '../../repository/thingRepo';
-import { Thing } from '../../models/Thing';
-import { getUserFromJwt } from '../../utils/jwtHelper';
-import { createLogger } from '../../utils/logger';
-import { IsNullOrWhiteSpace } from '../../utils/stringHelper';
+import { getThingById, updateThing } from '../../../repository/thingRepo';
+import { Thing } from '../../../models/Thing';
+import { getUserFromJwt } from '../../../utils/jwtHelper';
+import { createLogger } from '../../../utils/logger';
+import { IsNullOrWhiteSpace } from '../../../utils/stringHelper';
 
 const logger = createLogger('Update Thing');
 
