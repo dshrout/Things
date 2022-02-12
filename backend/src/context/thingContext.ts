@@ -39,10 +39,10 @@ export class ThingContext {
     async getThingById(userId: string, thingId: string): Promise<Thing> {
         const result = await this.docClient.query({
             TableName: this.thingTable,
-            KeyConditionExpression: 'userId = :userId AND todoId = :todoId',
+            KeyConditionExpression: 'userId = :userId AND thingId = :thingId',
             ExpressionAttributeValues: {
                 ':userId': userId,
-                ':todoId': thingId
+                ':thingId': thingId
             }
           }).promise();
 
