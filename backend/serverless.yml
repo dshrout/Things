@@ -21,6 +21,7 @@ provider:
     UNIQUE_STAGE_ID: ${self:provider.environment.AWS_KEY_ID}-${self:provider.stage}
     THINGS_TABLE: Thing-${self:provider.stage}
     THINGS_CREATED_AT_INDEX: CreatedAtIndex
+    PICTURE_TABLE: Picture-${self:provider.stage}
     IMAGES_S3_BUCKET: things-images-${self:provider.environment.UNIQUE_STAGE_ID}
     SIGNED_URL_EXPIRATION: 300
   logs:
@@ -163,26 +164,33 @@ resources:
     ThingTable:
       Type: AWS::DynamoDB::Table
       Properties:
+        TableName: ${self:provider.environment.THINGS_TABLE}
+        BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: Id
             AttributeType: S
           - AttributeName: UserId
             AttributeType: S
-          - AttributeName: Category
-            AttributeType: S
-          - AttributeName: Name
-            AttributeType: S
-          - AttributeName: Rating
-            AttributeType: N
-          - AttributeName: Review
-            AttributeType: S
         KeySchema:
-          - AttributeName: UserId
-            KeyType: HASH
           - AttributeName: Id
             KeyType: RANGE
+          - AttributeName: UserId
+            KeyType: HASH
+    PictureTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.PICTURE_TABLE}
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.THINGS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: Id
+            AttributeType: S
+          - AttributeName: ThingId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: Id
+            KeyType: RANGE
+          - AttributeName: ThingId
+            KeyType: HASH
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
