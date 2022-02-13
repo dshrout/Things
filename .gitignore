@@ -105,3 +105,7 @@ dist
 
 # Webpack directories
 .webpack
+
+# Client files
+a0-variables.js
+auth_config.json
