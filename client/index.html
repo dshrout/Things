@@ -70,19 +70,14 @@
                   <div class="dropdown-menu">
                     <!-- Show the user's full name from the id token here -->
                     <div class="dropdown-header nav-user-name user-name"></div>
-                    <a
-                      href="/profile"
-                      class="dropdown-item dropdown-profile route-link"
-                    >
+                    <a href="/profile" class="dropdown-item dropdown-profile route-link">
                       <i class="fas fa-user mr-3"></i> Profile
                     </a>
-                    <a
-                      href="#"
-                      class="dropdown-item"
-                      id="qsLogoutBtn"
-                      onclick="logout()"
-                    >
+                    <a href="#" class="dropdown-item" id="qsLogoutBtn" onclick="logout()">
                       <i class="fas fa-power-off mr-3"></i> Log out
+                    </a>
+                    <a href="#" class="dropdown-item" id="AccessToken" onclick="copyAccessToken()">
+                      <i class="fas fa-copy mr-3"></i> Copy Access Token
                     </a>
                   </div>
                 </li>
@@ -274,7 +269,7 @@
       <footer class="bg-light text-center p-5">
         <div class="logo"></div>
         <p>
-          Sample project provided by
+          Powered by
           <a href="https://auth0.com">Auth0</a>
         </p>
       </footer>

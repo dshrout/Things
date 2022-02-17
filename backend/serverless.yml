@@ -172,10 +172,10 @@ resources:
           - AttributeName: UserId
             AttributeType: S
         KeySchema:
-          - AttributeName: Id
-            KeyType: RANGE
           - AttributeName: UserId
             KeyType: HASH
+          - AttributeName: Id
+            KeyType: RANGE
     PictureTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -187,10 +187,10 @@ resources:
           - AttributeName: ThingId
             AttributeType: S
         KeySchema:
-          - AttributeName: Id
-            KeyType: RANGE
           - AttributeName: ThingId
             KeyType: HASH
+          - AttributeName: Id
+            KeyType: RANGE
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:

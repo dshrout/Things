@@ -21,7 +21,8 @@ const login = async (targetUrl) => {
       options.appState = { targetUrl };
     }
 
-    await auth0.loginWithRedirect(options);
+    let loginResult = await auth0.loginWithRedirect(options);
+    console.log('loginResult: ', loginResult);
   } catch (err) {
     console.log("Log in failed", err);
   }
@@ -36,6 +37,11 @@ const logout = () => {
   } catch (err) {
     console.log("Log out failed", err);
   }
+}
+
+const copyAccessToken = async () => {
+  const accessKey = await auth0.getTokenSilently();
+  navigator.clipboard.writeText(accessKey);
 }
 
 /**

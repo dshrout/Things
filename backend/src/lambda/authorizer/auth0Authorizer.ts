@@ -53,7 +53,8 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
 
   try {
     const jwksData = await Axios.get(jwksUrl);
-    const certKey = jwksData['data']['keys'][0]['x5c'][0];
+    let certKey = jwksData['data']['keys'][0]['x5c'][0];
+    certKey = certKey.match(/.{1,64}/g).join('\n');
     cert = `-----BEGIN CERTIFICATE-----\n${certKey}\n-----END CERTIFICATE-----`;
   } catch (ex) {
     logger.info('Error getting JWKS data: ', ex);
