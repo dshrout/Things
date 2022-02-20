@@ -10,36 +10,66 @@ import { IsNullOrWhiteSpace } from '../../../utils/stringHelper';
 
 const logger = createLogger('Update Thing');
 
+let newThing: Thing;
+let updatedThing: Thing;
+
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Update Thing: ', event);
 
-  const newThing: Thing = JSON.parse(event.body)
-  newThing.userId = getUserFromJwt(event)
+  if (!ValidateNewThing(event)) {
+    return MissingRequiredFieldsError();
+  }
 
-  if (!ValidateRequest(newThing)) {
-    return {
+  if (!await ValidateThingExists()) {
+    return ThingNotFoundError();
+  }
+
+  updatedThing = await updateThing(newThing);
+
+  return UpdateSuccess();
+})
+
+function ValidateNewThing(event: APIGatewayProxyEvent): boolean {
+  newThing = JSON.parse(event.body)
+  newThing.userId = getUserFromJwt(event)
+  if(IsNullOrWhiteSpace(newThing.userId)) {
+    return false;
+  }
+  return true;
+}
+
+function MissingRequiredFieldsError() {
+  logger.info('HTTP 400 - Missing required field. ' + newThing);
+  return {
       statusCode: 400,
       body: 'Missing required field.'
     }
-  }
+}
 
-  const oldThing = await getThingById(newThing.userId, newThing.id);
-  if (IsNullOrWhiteSpace(oldThing.name)) {
-    logger.info('HTTP 404 - Thing with id ' + oldThing.id + ' not found for user ' + oldThing.userId);
-    return {
-      statusCode: 404,
-      body: 'Item not found.'
-    }
+async function ValidateThingExists(): Promise<boolean> {
+  const existingThing = await getThingById(newThing.userId, newThing.id);
+  if (IsNullOrWhiteSpace(existingThing.name)) {
+    return false;
   }
+  return true;
+}
 
-  const items = await updateThing(newThing);
+function ThingNotFoundError() {
+  logger.info('HTTP 404 - Thing with id ' + newThing.id + ' not found for user ' + newThing.userId);
+  return {
+    statusCode: 404,
+    body: 'Thing not found.'
+  }
+}
+
+function UpdateSuccess() {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      items
+      items: updatedThing
     })
   }
-})
+}
 
 handler
   .use(httpErrorHandler())
@@ -48,10 +78,4 @@ handler
       credentials: true
     })
   )
-
-function ValidateRequest(thing: Thing): boolean {
-  if(IsNullOrWhiteSpace(thing.userId)) {
-    return false;
-  }
-  return true;
-}
+  

@@ -23,7 +23,7 @@
     }
   },
   "required": [
-    "id"
+    "id", "category", "name", "rating", "review"
   ],
   "additionalProperties": false
 }

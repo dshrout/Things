@@ -10,7 +10,7 @@ const logger = createLogger('Thing Context');
 export class ThingContext {
     constructor (
         private readonly docClient: DocumentClient = new awsx.DynamoDB.DocumentClient(),
-        private readonly thingTable: string = process.env.THING_TABLE
+        private readonly thingTable: string = process.env.THINGS_TABLE
     ){}
 
     // Create
@@ -39,7 +39,7 @@ export class ThingContext {
     async getThingById(userId: string, thingId: string): Promise<Thing> {
         const result = await this.docClient.query({
             TableName: this.thingTable,
-            KeyConditionExpression: 'userId = :userId AND thingId = :thingId',
+            KeyConditionExpression: 'userId = :userId AND id = :thingId',
             ExpressionAttributeValues: {
                 ':userId': userId,
                 ':thingId': thingId
@@ -52,23 +52,24 @@ export class ThingContext {
     // Update
     async updateThing(thing: Thing): Promise<Thing> {
         logger.info(`Updating Thing: ${thing.id}`);
+
         await this.docClient.update({
             TableName: this.thingTable,
             Key: { 
-                UserId: thing.userId,
-                Id: thing.id 
+                userId: thing.userId,
+                id: thing.id 
             },
-            ExpressionAttributeNames: {"#n": "Name"}, // avoid conflict with DynamoDB reserved word. (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html)
-            UpdateExpression: "set Category = :Category, #n = :Name, Rating = :Rating, Review = :Review",
+            ExpressionAttributeNames: {"#n": "name"}, // avoid conflict with DynamoDB reserved word. (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html)
+            UpdateExpression: "set category = :category, #n = :name, rating = :rating, review = :review",
             ExpressionAttributeValues: {
-                ":Category": thing.category,
-                ":Name": thing.name,
-                ":Rating": thing.rating,
-                ":Review": thing.review,
+                ":category": thing.category,
+                ":name": thing.name,
+                ":rating": thing.rating,
+                ":review": thing.review,
             },
             ReturnValues: "UPDATED_NEW"
         }).promise();
-          
+
         return thing as Thing;
     }
 
@@ -78,8 +79,8 @@ export class ThingContext {
         const params = {
             TableName: this.thingTable,
             Key: {
-              UserId: userId,
-              Id: thingId 
+              userId: userId,
+              id: thingId 
             }
         }
 

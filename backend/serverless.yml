@@ -109,7 +109,7 @@ functions:
     handler: src/lambda/api/things/updateThing.handler
     events:
       - http:
-          method: patch
+          method: put
           path: things
           cors: true
           authorizer:
@@ -167,14 +167,14 @@ resources:
         TableName: ${self:provider.environment.THINGS_TABLE}
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
-          - AttributeName: Id
+          - AttributeName: id
             AttributeType: S
-          - AttributeName: UserId
+          - AttributeName: userId
             AttributeType: S
         KeySchema:
-          - AttributeName: UserId
+          - AttributeName: userId
             KeyType: HASH
-          - AttributeName: Id
+          - AttributeName: id
             KeyType: RANGE
     PictureTable:
       Type: AWS::DynamoDB::Table
@@ -182,14 +182,14 @@ resources:
         TableName: ${self:provider.environment.PICTURE_TABLE}
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
-          - AttributeName: Id
+          - AttributeName: id
             AttributeType: S
-          - AttributeName: ThingId
+          - AttributeName: thingId
             AttributeType: S
         KeySchema:
-          - AttributeName: ThingId
+          - AttributeName: thingId
             KeyType: HASH
-          - AttributeName: Id
+          - AttributeName: id
             KeyType: RANGE
     AttachmentsBucket:
       Type: AWS::S3::Bucket
