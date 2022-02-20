@@ -3,10 +3,10 @@ import 'source-map-support/register';
 import * as middy from 'middy';
 import { cors } from 'middy/middlewares';
 import { Thing } from '../../../models/Thing';
-import { getUserFromJwt } from '../../../utils/jwtHelper';
+import { getUserFromJwt } from '../../../utilities/jwtHelper';
 import { createThing } from '../../../repository/thingRepo';
-import { createLogger } from '../../../utils/logger';
-import { IsNullOrWhiteSpace } from '../../../utils/stringHelper';
+import { createLogger } from '../../../utilities/logger';
+import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 
 const logger = createLogger('createThing');
 

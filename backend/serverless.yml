@@ -149,6 +149,142 @@ functions:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
 
+
+  CreatePicture:
+    handler: src/lambda/api/pictures/createPicture.handler
+    events:
+      - http:
+          method: post
+          path: pictures
+          cors: true
+          authorizer:
+            name: RS256Auth
+          request:
+            schemas:
+              application/json: ${file(requestSchemas/create-picture.json)}
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
+        Action:
+          - dynamodb:PutItem
+      - Effect: Allow
+        Resource: "*"              
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+  RetrievePicture:
+    handler: src/lambda/api/pictures/retrievePicture.handler
+    events:
+      - http:
+          method: get
+          path: pictures/{id}
+          cors: true
+          authorizer:
+            name: RS256Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+        Action:
+          - s3:GetObject
+      - Effect: Allow
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
+        Action:
+          - dynamodb:Query
+      - Effect: Allow
+        Resource: "*"              
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+  RetrievePicturesByThingId:
+    handler: src/lambda/api/pictures/retrievePicturesByThingId.handler
+    events:
+      - http:
+          method: get
+          path: pictures/?thingId={thingId}
+          cors: true
+          authorizer:
+            name: RS256Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+        Action:
+          - s3:GetObject
+      - Effect: Allow
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
+        Action:
+          - dynamodb:Query
+      - Effect: Allow
+        Resource: "*"              
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+  UpdatePicture:
+    handler: src/lambda/api/pictures/updatePicture.handler
+    events:
+      - http:
+          method: put
+          path: picture
+          cors: true
+          authorizer:
+            name: RS256Auth
+          request:
+            schemas:
+              application/json: ${file(requestSchemas/update-picture.json)}
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:Query
+      - Effect: Allow
+        Resource: "*"              
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+  DeletePicture:
+    handler: src/lambda/api/pictures/deletePicture.handler
+    events:
+      - http:
+          method: delete
+          path: pictures/{id}
+          cors: true
+          authorizer:
+            name: RS256Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
+        Action:
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+      - Effect: Allow
+        Resource: "*"              
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+  DeletePicturesByThingId:
+    handler: src/lambda/api/pictures/deletePicturesByThingId.handler
+    events:
+      - http:
+          method: delete
+          path: pictures/?thingId={thingId}
+          cors: true
+          authorizer:
+            name: RS256Auth
+    iamRoleStatements:
+      - Effect: Allow
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
+        Action:
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+      - Effect: Allow
+        Resource: "*"              
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+
+
+
+
 resources:
   Resources:
     GatewayResponseDefault4XX:

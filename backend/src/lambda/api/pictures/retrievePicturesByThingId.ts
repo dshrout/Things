@@ -2,31 +2,31 @@ import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors } from 'middy/middlewares';
-import { getThingById } from '../../../repository/thingRepo';
+import { getPicturesByThingId } from '../../../repository/pictureRepo';
 import { getUserFromJwt } from '../../../utilities/jwtHelper';
 import { createLogger } from '../../../utilities/logger';
 import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 
-const logger = createLogger('Retrieve Thing By Id');
+const logger = createLogger('Retrieve Pictures By Thing Id');
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  logger.info('Get Thing By Id: ', event);
+  logger.info('Get Pictures By Thing Id: ', event);
 
   const userId = getUserFromJwt(event);
   if (IsNullOrWhiteSpace(userId)) {
     return {
       statusCode: 400,
-      body: 'User ID cannot be empty.'
+      body: 'Invalid User ID.'
     }
   }
 
-  const thingId = event.pathParameters.id
-  const things = await getThingById(userId, thingId);
+  const thingId = event.queryStringParameters.thingId;
+  const pictures = await getPicturesByThingId(thingId);
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      items: things
+      items: pictures
     })
   }
 })

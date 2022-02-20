@@ -4,9 +4,9 @@ import * as middy from 'middy';
 import { cors, httpErrorHandler } from 'middy/middlewares';
 import { getThingById, updateThing } from '../../../repository/thingRepo';
 import { Thing } from '../../../models/Thing';
-import { getUserFromJwt } from '../../../utils/jwtHelper';
-import { createLogger } from '../../../utils/logger';
-import { IsNullOrWhiteSpace } from '../../../utils/stringHelper';
+import { getUserFromJwt } from '../../../utilities/jwtHelper';
+import { createLogger } from '../../../utilities/logger';
+import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 
 const logger = createLogger('Update Thing');
 
@@ -48,7 +48,7 @@ function MissingRequiredFieldsError() {
 
 async function ValidateThingExists(): Promise<boolean> {
   const existingThing = await getThingById(newThing.userId, newThing.id);
-  if (IsNullOrWhiteSpace(existingThing.name)) {
+  if (IsNullOrWhiteSpace(existingThing?.name)) {
     return false;
   }
   return true;

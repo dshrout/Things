@@ -3,9 +3,9 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors } from 'middy/middlewares';
 import { getThings } from '../../../repository/thingRepo';
-import { getUserFromJwt } from '../../../utils/jwtHelper';
-import { createLogger } from '../../../utils/logger';
-import { IsNullOrWhiteSpace } from '../../../utils/stringHelper';
+import { getUserFromJwt } from '../../../utilities/jwtHelper';
+import { createLogger } from '../../../utilities/logger';
+import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 
 const logger = createLogger('Retrieve Things');
 

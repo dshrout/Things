@@ -1,7 +1,7 @@
 import * as aws from 'aws-sdk';
 import * as awsxray from 'aws-xray-sdk';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { createLogger } from '../utils/logger';
+import { createLogger } from '../utilities/logger';
 import { Thing } from '../models/Thing';
 
 const awsx = awsxray.captureAWS(aws);
