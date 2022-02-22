@@ -20,13 +20,3 @@ export function deletePictureFile (pictureId: string) {
     Key: pictureId
   });
 }
-
-
-// , function(error, data) {
-//   if (error) {
-//       console.error("Error on delete");
-//       console.error(error);
-//   } else {
-//       console.log("Deleted successfully");
-//   }
-// }
