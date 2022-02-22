@@ -21,6 +21,13 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   }
 
   const thingId = event.queryStringParameters.thingId;
+  if (IsNullOrWhiteSpace(thingId)) {
+    return {
+      statusCode: 400,
+      body: 'One or more required fields are empty.'
+    }
+  }
+
   const pictures = await getPicturesByThingId(thingId);
 
   return {

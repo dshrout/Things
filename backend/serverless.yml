@@ -148,8 +148,6 @@ functions:
         Action:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
-
-
   CreatePicture:
     handler: src/lambda/api/pictures/createPicture.handler
     events:
@@ -163,6 +161,10 @@ functions:
             schemas:
               application/json: ${file(requestSchemas/create-picture.json)}
     iamRoleStatements:
+      - Effect: Allow
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+        Action:
+          - s3:PutObject
       - Effect: Allow
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
         Action:
@@ -200,7 +202,7 @@ functions:
     events:
       - http:
           method: get
-          path: pictures/?thingId={thingId}
+          path: pictures
           cors: true
           authorizer:
             name: RS256Auth
@@ -232,6 +234,10 @@ functions:
               application/json: ${file(requestSchemas/update-picture.json)}
     iamRoleStatements:
       - Effect: Allow
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+        Action:
+          - s3:PutObject
+      - Effect: Allow
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
         Action:
           - dynamodb:UpdateItem
@@ -252,6 +258,11 @@ functions:
             name: RS256Auth
     iamRoleStatements:
       - Effect: Allow
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+        Action:
+          - s3:DeleteObject
+          - s3:DeleteObjects
+      - Effect: Allow
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
         Action:
           - dynamodb:DeleteItem
@@ -266,11 +277,16 @@ functions:
     events:
       - http:
           method: delete
-          path: pictures/?thingId={thingId}
+          path: pictures
           cors: true
           authorizer:
             name: RS256Auth
     iamRoleStatements:
+      - Effect: Allow
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+        Action:
+          - s3:DeleteObject
+          - s3:DeleteObjects
       - Effect: Allow
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
         Action:
@@ -281,9 +297,6 @@ functions:
         Action:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
-
-
-
 
 resources:
   Resources:
