@@ -162,13 +162,14 @@ functions:
               application/json: ${file(requestSchemas/create-picture.json)}
     iamRoleStatements:
       - Effect: Allow
-        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
-        Action:
-          - s3:PutObject
-      - Effect: Allow
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
         Action:
           - dynamodb:PutItem
+          - dynamodb:UpdateItem
+      - Effect: Allow
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+        Action:
+          - s3:*
       - Effect: Allow
         Resource: "*"              
         Action:
@@ -236,7 +237,7 @@ functions:
       - Effect: Allow
         Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
         Action:
-          - s3:PutObject
+          - s3:*
       - Effect: Allow
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
         Action:
@@ -253,31 +254,6 @@ functions:
       - http:
           method: delete
           path: pictures/{id}
-          cors: true
-          authorizer:
-            name: RS256Auth
-    iamRoleStatements:
-      - Effect: Allow
-        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
-        Action:
-          - s3:DeleteObject
-          - s3:DeleteObjects
-      - Effect: Allow
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.PICTURE_TABLE}
-        Action:
-          - dynamodb:DeleteItem
-          - dynamodb:Query
-      - Effect: Allow
-        Resource: "*"              
-        Action:
-          - xray:PutTraceSegments
-          - xray:PutTelemetryRecords
-  DeletePicturesByThingId:
-    handler: src/lambda/api/pictures/deletePicturesByThingId.handler
-    events:
-      - http:
-          method: delete
-          path: pictures
           cors: true
           authorizer:
             name: RS256Auth
@@ -333,10 +309,10 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
-          - AttributeName: thingId
+          - AttributeName: userId
             AttributeType: S
         KeySchema:
-          - AttributeName: thingId
+          - AttributeName: userId
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE

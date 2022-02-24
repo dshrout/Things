@@ -2,12 +2,13 @@ import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors } from 'middy/middlewares';
-import { getPicture } from '../../../repository/pictureRepo';
+import { PictureRepo } from '../../../repository/pictureRepo';
 import { getUserFromJwt } from '../../../utilities/jwtHelper';
 import { createLogger } from '../../../utilities/logger';
 import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 
 const logger = createLogger('Retrieve Picture');
+const pictureRepo = new PictureRepo();
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Get Picture: ', event);
@@ -21,7 +22,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   }
 
   const pictureId = event.pathParameters.id
-  const picture = await getPicture(pictureId);
+  const picture = await pictureRepo.getPicture(userId, pictureId);
 
   return {
     statusCode: 200,

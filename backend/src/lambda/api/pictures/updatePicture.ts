@@ -2,7 +2,7 @@ import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors, httpErrorHandler } from 'middy/middlewares';
-import { getPicture, updatePicture } from '../../../repository/pictureRepo';
+import { PictureRepo } from '../../../repository/pictureRepo';
 import { Picture } from '../../../models/Picture';
 import { getUserFromJwt } from '../../../utilities/jwtHelper';
 import { createLogger } from '../../../utilities/logger';
@@ -10,7 +10,8 @@ import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 import { getUploadUrl } from '../../../utilities/s3Helper';
 
 const logger = createLogger('Update Picture');
-const bucketName = process.env.ATTACHMENT_S3_BUCKET;
+const bucketName = process.env.IMAGES_S3_BUCKET;
+const pictureRepo = new PictureRepo();
 
 let userId: string;
 let uploadUrl: string;
@@ -28,7 +29,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     return InvalidUserError();
   }
 
-  existingPicture = await getPicture(newPicture.id);
+  existingPicture = await pictureRepo.getPicture(userId, newPicture.id);
   if (!ValidatePictureExists()) {
     return PictureNotFoundError();
   }
@@ -38,7 +39,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     newPicture.url = `https://${bucketName}.s3.amazonaws.com/${existingPicture.id}`;
   }
 
-  updatedPicture = await updatePicture(newPicture);
+  updatedPicture = await pictureRepo.updatePicture(newPicture);
 
   return UpdateSuccess();
 })

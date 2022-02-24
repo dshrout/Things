@@ -25,22 +25,24 @@ export class PictureContext {
     }
 
     // Retrieve
-    async getPicture(pictureId: string): Promise<Picture> {
+    async getPicture(userId: string, pictureId: string): Promise<Picture> {
         const result = await this.docClient.query({
             TableName: this.pictureTable,
-            KeyConditionExpression: 'id = :pictureId',
+            KeyConditionExpression: 'userId = :userId AND id = :pictureId',
             ExpressionAttributeValues: {
+                ':userId': userId,
                 ':pictureId': pictureId
             }
           }).promise();
           
           return result.Items[0] as Picture;
     }
-    async getPicturesByThingId(thingId: string): Promise<Picture[]> {
+    async getPicturesByThingId(userId: string, thingId: string): Promise<Picture[]> {
         const result = await this.docClient.query({
             TableName: this.pictureTable,
-            KeyConditionExpression: 'thingId = :thingId',
+            KeyConditionExpression: 'userId = :userId AND thingId = :thingId',
             ExpressionAttributeValues: {
+                ':userId': userId,
                 ':thingId': thingId
             }
           }).promise();
@@ -54,10 +56,12 @@ export class PictureContext {
 
         await this.docClient.update({
             TableName: this.pictureTable,
-            Key: { 
-                id: picture.id 
+            Key: {
+                userId: picture.userId,
+                id: picture.id
             },
-            UpdateExpression: "set url = :url, thingId = :thingId",
+            ExpressionAttributeNames: {"#u": "url"}, // avoid conflict with DynamoDB reserved word. (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/ReservedWords.html)
+            UpdateExpression: "set #u = :url, thingId = :thingId",
             ExpressionAttributeValues: {
                 ":url": picture.url,
                 ":thingId": picture.thingId
@@ -69,23 +73,13 @@ export class PictureContext {
     }
 
     // Delete
-    async deletePicture(pictureId: string): Promise<void> {
+    async deletePicture(userId: string, pictureId: string): Promise<void> {
         logger.info(`Deleting Picture ${pictureId}`);
         const params = {
             TableName: this.pictureTable,
             Key: {
+              userId: userId,
               id: pictureId 
-            }
-        }
-
-        await this.docClient.delete(params).promise()
-    }
-    async deletePicturesByThingId(thingId: string): Promise<void> {
-        logger.info(`Deleting all Pictures for Thing ${thingId}`);
-        const params = {
-            TableName: this.pictureTable,
-            Key: {
-              thingId: thingId
             }
         }
 

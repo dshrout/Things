@@ -4,31 +4,32 @@ import * as middy from 'middy';
 import { cors } from 'middy/middlewares';
 import { Picture } from '../../../models/Picture';
 import { getUserFromJwt } from '../../../utilities/jwtHelper';
-import { createPicture, updatePicture } from '../../../repository/pictureRepo';
+import { PictureRepo } from '../../../repository/pictureRepo';
 import { createLogger } from '../../../utilities/logger';
 import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 import { getUploadUrl } from '../../../utilities/s3Helper';
 
 const logger = createLogger('createPicture');
-const bucketName = process.env.ATTACHMENT_S3_BUCKET;
+const bucketName = process.env.IMAGES_S3_BUCKET;
+const pictureRepo = new PictureRepo();
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Create Picture: ', event);
 
-  const newPicture: Picture = JSON.parse(event.body);
-  const userId = getUserFromJwt(event);
+  let newPicture: Picture = JSON.parse(event.body);
+  newPicture.userId = getUserFromJwt(event);
 
-  if (!ValidateRequest(userId, newPicture)) {
+  if (!ValidateRequest(newPicture)) {
     return {
       statusCode: 400,
       body: 'One or more required fields are empty.'
     }
   }
 
-  const picture = await createPicture(newPicture);
-  const uploadUrl = getUploadUrl(picture.id);
+  const picture = await pictureRepo.createPicture(newPicture);
+  let uploadUrl = getUploadUrl(picture.id);
   picture.url = `https://${bucketName}.s3.amazonaws.com/${picture.id}`;
-  const fullPicture = await updatePicture(picture);
+  const fullPicture = await pictureRepo.updatePicture(picture);
 
   if (!ValidatePicture(fullPicture)) {
     return {
@@ -51,8 +52,8 @@ handler.use(
   })
 )
 
-function ValidateRequest(userId: string, picture: Picture): boolean {
-  if(IsNullOrWhiteSpace(userId) || IsNullOrWhiteSpace(picture.thingId)) {
+function ValidateRequest(picture: Picture): boolean {
+  if(IsNullOrWhiteSpace(picture.userId) || IsNullOrWhiteSpace(picture.thingId)) {
     return false;
   }
   return true;

@@ -2,12 +2,13 @@ import 'source-map-support/register';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as middy from 'middy';
 import { cors, httpErrorHandler } from 'middy/middlewares';
-import { getPicture, deletePicture } from '../../../repository/pictureRepo';
+import { PictureRepo } from '../../../repository/pictureRepo';
 import { getUserFromJwt } from '../../../utilities/jwtHelper';
 import { createLogger } from '../../../utilities/logger';
 import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 
 const logger = createLogger('Delete Picture');
+const pictureRepo = new PictureRepo();
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Delete Picture: ', event);
@@ -21,7 +22,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     }
   }
 
-  const picture = await getPicture(pictureId);
+  const picture = await pictureRepo.getPicture(userId, pictureId);
   if (IsNullOrWhiteSpace(picture.id)) {
     logger.info('HTTP 404 - pictureId ' + pictureId + ' not found for user ' + userId);
     return {
@@ -30,7 +31,8 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     }
   }
 
-  await deletePicture(pictureId);
+  await pictureRepo.deletePicture(userId, pictureId);
+  
   return {
     statusCode: 204,
     body: ''

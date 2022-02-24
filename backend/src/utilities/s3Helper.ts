@@ -3,7 +3,7 @@ import * as awsxray from 'aws-xray-sdk'
 
 const awsx = awsxray.captureAWS(aws);
 const s3 = new awsx.S3({signatureVersion: 'v4'});
-const bucketName = process.env.ATTACHMENT_S3_BUCKET;
+const bucketName = process.env.IMAGES_S3_BUCKET;
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION;
 
 export function getUploadUrl (pictureId: string): string {
