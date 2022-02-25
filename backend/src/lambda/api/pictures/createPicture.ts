@@ -7,7 +7,7 @@ import { getUserFromJwt } from '../../../utilities/jwtHelper';
 import { PictureRepo } from '../../../repository/pictureRepo';
 import { createLogger } from '../../../utilities/logger';
 import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
-import { getUploadUrl } from '../../../utilities/s3Helper';
+import { getS3UploadUrl } from '../../../utilities/s3Helper';
 
 const logger = createLogger('createPicture');
 const bucketName = process.env.IMAGES_S3_BUCKET;
@@ -27,7 +27,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   }
 
   const picture = await pictureRepo.createPicture(newPicture);
-  let uploadUrl = getUploadUrl(picture.id);
+  let uploadUrl = getS3UploadUrl(picture.id);
   picture.url = `https://${bucketName}.s3.amazonaws.com/${picture.id}`;
   const fullPicture = await pictureRepo.updatePicture(picture);
 

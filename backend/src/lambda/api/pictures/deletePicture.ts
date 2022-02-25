@@ -32,7 +32,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   }
 
   await pictureRepo.deletePicture(userId, pictureId);
-  
+
   return {
     statusCode: 204,
     body: ''

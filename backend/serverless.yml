@@ -226,7 +226,7 @@ functions:
     events:
       - http:
           method: put
-          path: picture
+          path: pictures
           cors: true
           authorizer:
             name: RS256Auth

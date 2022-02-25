@@ -7,7 +7,7 @@ import { Picture } from '../../../models/Picture';
 import { getUserFromJwt } from '../../../utilities/jwtHelper';
 import { createLogger } from '../../../utilities/logger';
 import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
-import { getUploadUrl } from '../../../utilities/s3Helper';
+import { getS3UploadUrl } from '../../../utilities/s3Helper';
 
 const logger = createLogger('Update Picture');
 const bucketName = process.env.IMAGES_S3_BUCKET;
@@ -35,10 +35,11 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   }
 
   if (newPicture.thingId == existingPicture.thingId) {
-    uploadUrl = getUploadUrl(existingPicture.id);
+    uploadUrl = getS3UploadUrl(existingPicture.id);
     newPicture.url = `https://${bucketName}.s3.amazonaws.com/${existingPicture.id}`;
   }
 
+  FleshOutNewPicture();
   updatedPicture = await pictureRepo.updatePicture(newPicture);
 
   return UpdateSuccess();
@@ -70,6 +71,13 @@ function PictureNotFoundError() {
     statusCode: 404,
     body: 'Picture not found.'
   }
+}
+
+function FleshOutNewPicture() {
+  newPicture.id = newPicture.id || existingPicture.id;
+  newPicture.userId = newPicture.userId || existingPicture.userId;
+  newPicture.thingId = newPicture.thingId || existingPicture.thingId;
+  newPicture.url = newPicture.url || existingPicture.url;
 }
 
 function UpdateSuccess() {
