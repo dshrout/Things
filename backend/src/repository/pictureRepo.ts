@@ -13,11 +13,11 @@ export class PictureRepo {
     }
 
     // Retrieve
-    async getPicture(userId: string, pictureId: string): Promise<Picture>{
-        return pictureContext.getPicture(userId, pictureId);
+    async getPictureById(userId: string, pictureId: string): Promise<Picture>{
+        return pictureContext.getPictureById(userId, pictureId);
     }
-    async getPicturesByThingId(userId: string, thingId: string): Promise<Picture[]>{
-        return pictureContext.getPicturesByThingId(userId, thingId);
+    async getPictures(userId: string): Promise<Picture[]>{
+        return pictureContext.getPictures(userId);
     }
 
     // Update

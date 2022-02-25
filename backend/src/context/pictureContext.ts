@@ -25,7 +25,18 @@ export class PictureContext {
     }
 
     // Retrieve
-    async getPicture(userId: string, pictureId: string): Promise<Picture> {
+    async getPictures(userId: string): Promise<Picture[]> {
+        const result = await this.docClient.query({
+            TableName: this.pictureTable,
+            KeyConditionExpression: 'userId = :userId',
+            ExpressionAttributeValues: {
+                ':userId': userId
+            }
+          }).promise();
+
+          return result.Items as Picture[];
+    }
+    async getPictureById(userId: string, pictureId: string): Promise<Picture> {
         const result = await this.docClient.query({
             TableName: this.pictureTable,
             KeyConditionExpression: 'userId = :userId AND id = :pictureId',
@@ -36,18 +47,6 @@ export class PictureContext {
           }).promise();
           
           return result.Items[0] as Picture;
-    }
-    async getPicturesByThingId(userId: string, thingId: string): Promise<Picture[]> {
-        const result = await this.docClient.query({
-            TableName: this.pictureTable,
-            KeyConditionExpression: 'userId = :userId AND thingId = :thingId',
-            ExpressionAttributeValues: {
-                ':userId': userId,
-                ':thingId': thingId
-            }
-          }).promise();
-
-          return result.Items as Picture[];
     }
 
     // Update

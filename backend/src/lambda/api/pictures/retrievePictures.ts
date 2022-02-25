@@ -7,11 +7,11 @@ import { getUserFromJwt } from '../../../utilities/jwtHelper';
 import { createLogger } from '../../../utilities/logger';
 import { IsNullOrWhiteSpace } from '../../../utilities/stringHelper';
 
-const logger = createLogger('Retrieve Pictures By Thing Id');
+const logger = createLogger('Retrieve Pictures');
 const pictureRepo = new PictureRepo();
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  logger.info('Get Pictures By Thing Id: ', event);
+  logger.info('Get Pictures: ', event);
 
   const userId = getUserFromJwt(event);
   if (IsNullOrWhiteSpace(userId)) {
@@ -21,15 +21,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     }
   }
 
-  const thingId = event.queryStringParameters.thingId;
-  if (IsNullOrWhiteSpace(thingId)) {
-    return {
-      statusCode: 400,
-      body: 'One or more required fields are empty.'
-    }
-  }
-
-  const pictures = await pictureRepo.getPicturesByThingId(userId, thingId);
+  const pictures = await pictureRepo.getPictures(userId);
 
   return {
     statusCode: 200,

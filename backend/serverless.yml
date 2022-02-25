@@ -175,7 +175,7 @@ functions:
         Action:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
-  RetrievePicture:
+  RetrievePictureById:
     handler: src/lambda/api/pictures/retrievePicture.handler
     events:
       - http:
@@ -198,8 +198,8 @@ functions:
         Action:
           - xray:PutTraceSegments
           - xray:PutTelemetryRecords
-  RetrievePicturesByThingId:
-    handler: src/lambda/api/pictures/retrievePicturesByThingId.handler
+  RetrievePictures:
+    handler: src/lambda/api/pictures/retrievePictures.handler
     events:
       - http:
           method: get
@@ -311,11 +311,20 @@ resources:
             AttributeType: S
           - AttributeName: userId
             AttributeType: S
+          - AttributeName: thingId
+            AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: PicturesByThingIdIndex
+            KeySchema:
+              - AttributeName: thingId
+                KeyType: HASH
+            Projection:
+              ProjectionType: "ALL"
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:

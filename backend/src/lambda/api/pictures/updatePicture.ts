@@ -29,7 +29,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     return InvalidUserError();
   }
 
-  existingPicture = await pictureRepo.getPicture(userId, newPicture.id);
+  existingPicture = await pictureRepo.getPictureById(userId, newPicture.id);
   if (!ValidatePictureExists()) {
     return PictureNotFoundError();
   }

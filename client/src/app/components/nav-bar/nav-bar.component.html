@@ -80,12 +80,6 @@
               >
                 <fa-icon [icon]="faPowerOff" class="mr-3"></fa-icon> Log out
               </button>
-              <button
-                (click)="copyIdToken()"
-                class="btn btn-link dropdown-item"
-              >
-                <fa-icon [icon]="faCopy" class="mr-3"></fa-icon>Copy Id Token
-              </button>
             </div>
           </li>
           <!-- /Fullsize dropdown -->
@@ -138,15 +132,6 @@
               (click)="logout()"
             >
               Log out
-            </button>
-          </li>
-          <li>
-            <fa-icon [icon]="faCopy" class="mr-3"></fa-icon>
-            <button
-            (click)="copyIdToken()"
-            class="btn btn-link dropdown-item"
-            >
-              Copy Id Token
             </button>
           </li>
         </ul>

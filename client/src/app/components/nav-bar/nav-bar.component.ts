@@ -28,9 +28,4 @@ export class NavBarComponent implements OnInit {
   logout() {
     this.auth.logout({ returnTo: this.doc.location.origin });
   }
-
-  copyIdToken = async () => {
-    // const claims = await this.auth.getId
-    // navigator.clipboard.writeText(accessKey);
-  }
 }

@@ -22,7 +22,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
     }
   }
 
-  const picture = await pictureRepo.getPicture(userId, pictureId);
+  const picture = await pictureRepo.getPictureById(userId, pictureId);
   if (IsNullOrWhiteSpace(picture.id)) {
     logger.info('HTTP 404 - pictureId ' + pictureId + ' not found for user ' + userId);
     return {

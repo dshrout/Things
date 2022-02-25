@@ -22,7 +22,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   }
 
   const pictureId = event.pathParameters.id
-  const picture = await pictureRepo.getPicture(userId, pictureId);
+  const picture = await pictureRepo.getPictureById(userId, pictureId);
 
   return {
     statusCode: 200,
